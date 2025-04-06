@@ -16,7 +16,7 @@ pipeline{
     agent any 
     environment{
         REQUIRED_TOOLS = "docker, aws"
-        BRANCH_NAME = "feature-client-release"
+        BRANCH_NAME = "feature-client-micro"
         PROJECT_NAME = "emart-client-micro"
         GIT_REPO_URL = "https://github.com/darosa050187/emart-client-micro.git"
         AWS_REGION = "us-east-1"
