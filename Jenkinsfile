@@ -1,4 +1,4 @@
-def notifySlack(String buildStatus) {
+def notifySlack(String buildStatus, String slackChannel = "#emartapp-java-micro-team") {
     def colorCode = buildStatus == 'SUCCESS' ? '#36a64f' : '#ff0000'
     def summary = "*Job:* ${env.JOB_NAME} #${env.BUILD_NUMBER}\n" +
                  "*Status:* ${buildStatus}\n" +
@@ -6,7 +6,7 @@ def notifySlack(String buildStatus) {
                  "*Details:* ${env.BUILD_URL}"
 
     slackSend(
-        channel: env.SLACK_CHANNEL,
+        channel: slackChannel,
         color: colorCode,
         message: summary,
         tokenCredentialId: env.SLACK_CREDENTIALS_ID
@@ -15,16 +15,21 @@ def notifySlack(String buildStatus) {
 pipeline{
     agent any 
     environment{
+        // *** Project variables  
         REQUIRED_TOOLS = "docker, aws"
         BRANCH_NAME = "feature-client-micro"
         PROJECT_NAME = "emart-client-micro"
+        ARTIFACT_NAME = "book-work-0.0.1-SNAPSHOT.jar" //Change if build the artifact apart from the multistage docker file is an option
+        // ** Git Repositories
         GIT_REPO_URL = "https://github.com/darosa050187/emart-client-micro.git"
+        // ** AWS Variables
         AWS_REGION = "us-east-1"
+        AWS_REGISTRY_CREDENTIAL = "ecr:us-east-1:AWS"
         ECR_REGISTRY_URI = "https://084828572941.dkr.ecr.us-east-1.amazonaws.com"
         ECR_REGISTRY_REPO = "084828572941.dkr.ecr.us-east-1.amazonaws.com"
         ECR_REGISTRY_NAME = "emart-client-repository"
+        // ** Docker variables
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        AWS_REGISTRY_CREDENTIAL = "ecr:us-east-1:AWS"
         IMAGE_NAME = "emart-client-repository"
         IMAGE_VERSION = "latest"
     }
@@ -69,6 +74,11 @@ pipeline{
                     sh "git clone --branch ${BRANCH_NAME} ${GIT_REPO_URL}"
                 }
             }
+        }
+        stage("Test and Build code") {
+          steps {
+            echo "Add the test and build steps here if needed"
+          }
         }
         stage("Check code With SonarQube") {
           environment {
