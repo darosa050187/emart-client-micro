@@ -78,8 +78,8 @@ pipeline{
             dir("${env.WORKSPACE}/tmp/${env.PROJECT_NAME}") {
               withSonarQubeEnv('Jenkins2Sonar') { 
                 sh '''${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=emart_nodeapi_api \
-                        -Dsonar.projectName=emart_nodeapi_api \
+                        -Dsonar.projectKey=${env.PROJECT_NAME} \
+                        -Dsonar.projectName=${env.PROJECT_NAME} \
                         -Dsonar.projectVersion=1.0 \
                         -Dsonar.sources=. ''' 
                     }
